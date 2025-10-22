@@ -54,7 +54,6 @@ python app.py
 2. Open your browser at http://127.0.0.1:3000/ (app runs on port 3000 by default)
 
 Default test credentials
-The repository includes a `README.txt` with test accounts. Example credentials from that file:
 
 - Locators (locatore):
 	- adam97@gmail.com / adam97
@@ -68,12 +67,4 @@ Notes, assumptions and caveats
 - The DAO modules use direct SQLite connections (`sqlite3.connect('db/affitti.db')`). Ensure `db/affitti.db` is present and readable by the app.
 - The app sets `app.config['SECRET_KEY']` in `app.py` with a hard-coded value. For production, move secrets to environment variables.
 - There is no automated migration or schema management; if you need to recreate the database, ask for the schema or export a working `affitti.db`.
-- This README assumes a local development run. The app was deployed previously on PythonAnywhere (see `README.txt`).
-
-Possible next improvements
-- Add a `requirements.txt` (pip freeze) for reproducible installs.
-- Provide a DB schema SQL file or migration scripts (Flask-Migrate / Alembic) so others can create `db/affitti.db` easily.
-- Move secret keys and configuration to environment variables.
-- Add unit tests and simple CI checks.
-
-If you'd like, I can generate a `requirements.txt` and a basic SQL file to recreate the schema from the current database (if `db/affitti.db` is present). Which would you prefer next?
+- This README assumes a local development run. The app was deployed previously on PythonAnywhere.
