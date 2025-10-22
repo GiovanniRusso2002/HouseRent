@@ -1,0 +1,180 @@
+{% extends "base.html" %}
+{% block title %}Home{% endblock %}
+{% block home_active %}active{% endblock %}
+
+{% block content %}
+<aside id="myaside" class="col-lg-3 col-md-12"> 
+  {% if not current_user.is_authenticated %}
+  <section>
+    <h3>Login</h3>
+    <div class="bg-light p-4 border rounded mb-3">
+      <form action="/login" method="POST">
+        <div class="mb-3">
+          <label for="emailInput" class="form-label">Email</label>
+          <input type="text" class="form-control" id="emailInput" aria-describedby="emailHelp" name="mail_utente">
+          
+        </div>
+        <div class="mb-3">
+          <label for="passwordInput" class="form-label">Password</label>
+          <input type="password" class="form-control" id="passwordInput" name="password">
+        </div>
+        <small>Non hai ancora un account? <a href="/iscriviti">Registrati</a></small>
+        <button type="submit" class="btn btn-primary mt-3">Accedi</button>
+      </form>
+    </div>
+  </section>
+  {% endif %}
+
+  <a href="{{url_for('home_locali')}}">  <button class="btn btn-secondary">  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-filter-circle" viewBox="0 0 16 16">
+    <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
+    <path d="M7 11.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 0 1h-1a.5.5 0 0 1-.5-.5m-2-3a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5m-2-3a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5"/>
+  </svg> Filtra per locali</button></a>
+</aside>
+
+
+<main class="col-lg-9 col-md-12">
+  {%if annunci%}
+  {% for annuncio in annunci %}
+  <article class="row border p-2 mx-2 my-4">
+    <div class="col-lg-3 col-md-6 col-sm-12 px-0">
+      {% if annuncio.foto%}
+      <img class="w-100 p-2"
+        src="{{ url_for('static', filename=annuncio.foto) }}" alt="Questa è l'immagine del post">
+      {% endif%}
+      
+      
+    </div>
+    <div class="col-lg-9 col-md-6 col-sm-12">
+      <section class="d-flex align-items-center mt-2 mb-4">
+        <div><img class="usrimg rounded-circle" src="{{ url_for('static', filename=annuncio.immagine_profilo ) }}"
+            alt="Questa è l'immagine dell'utente {{ annuncio.username |e }}"></div>
+        <div>
+          <h4 class="username">{{ annuncio.username |e }}</h4>
+        </div>
+        
+      </section>
+
+      <ul class="list-group list-group-flush pb-3">
+        <li class="list-group-item"><strong>Titolo: </strong>{{ annuncio.titolo |e }} </li>
+        <li class="list-group-item"><strong>Indirizzo: </strong>{{ annuncio.indirizzo |e }} </li>
+        <li class="list-group-item"><strong>Numero locali: </strong>{{ annuncio.locali |e }} </li>
+        <li class="list-group-item"><strong>Prezzo: </strong>€{{ annuncio.prezzo |e }} </li>
+    </ul>
+
+      <div class="d-grid gap-2 d-md-flex justify-content-md-end pb-3">
+        <a href="{{url_for('single_annuncio', ID_annuncio=annuncio.ID_annuncio)}}"><button class="btn btn-primary">Visualizza</button></a>
+        </div>
+    
+    </div>
+  </article>
+  {% endfor %}
+  {%else%}
+
+  <div class="alert alert-primary d-flex align-items-center text-center" role="alert">
+    <svg class="bi flex-shrink-0 me-2" role="img" aria-label="Info:"><use xlink:href="#info-fill"></use></svg>
+    <div>
+      Non ci sono annunci al momento.
+    </div>
+  </div>
+
+  {%endif%}
+</main> 
+
+{% if current_user.is_authenticated %}
+{% if current_user.tipo == "locatore"%}
+
+<button type="button" class="mybutton" data-bs-toggle="modal" data-bs-target="#createModal">
+  +
+</button>
+<div class="modal fade" id="createModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5">Crea un nuovo annuncio</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <form action="/annuncio/new" method="POST" enctype="multipart/form-data">
+        <div class="modal-body">
+
+
+        <div class="mb-3">
+            <label for="titoloInput" class="form-label">Titolo</label>
+            <input type="text" class="form-control" id="titoloInput" name="titolo" required>
+            </div>
+
+            <div class="mb-3">
+                <label for="indirizzoInput" class="form-label">Indirizzo</label>
+                <input type="text" class="form-control" id="indirizzoInput" name="indirizzo" required>
+                </div>
+
+        
+        <div class="mb-3 form-group">
+            <label for="selezionaOpzioneTipo">Seleziona un tipo</label>
+            <select class="form-select" id="selezionaOpzioneTipo" name="tipo" required>
+                <option>casa indipendente</option>
+                <option>appartamento</option>
+                <option>loft</option>
+                <option>villa</option>
+            </select>
+            </div>
+
+
+        <div class="mb-3 form-group">
+            <label for="selezionaOpzioneLocali">Seleziona il numero di locali</label>
+            <select class="form-select" id="selezionaOpzioneLocali" name="locali" required>
+                <option>1</option>
+                <option>2</option>
+                <option>3</option>
+                <option>4</option>
+                <option value="5">5+</option>
+            </select>
+            </div>
+
+      
+
+        <div class="mb-3">
+            <label for="annuncioTextArea" class="form-label">Descrizione</label>
+            <textarea class="form-control" id="annuncioTextArea" name="descrizione" rows="3"
+            placeholder="Inserisci una descrizione per il tuo annuncio" required minlength="30"></textarea>
+          </div>
+
+
+        <div class="mb-3 form-group">
+            <label for="prezzo">Prezzo:</label>
+            <div class="input-group">
+                <div class="input-group-prepend">
+                    <span class="input-group-text">€</span>
+                </div>
+                <input type="number" class="form-control" id="prezzo" name="prezzo" placeholder="Inserisci il prezzo" required>
+            </div>
+        </div>
+
+
+          <div class="mb-3">
+            <label for="imageFile" class="form-label">Seleziona fino a 5 foto</label>
+            <input class="form-control" name="immagini_annuncio" type="file" id="imageFile" multiple required>
+          </div>
+
+          <div class="mb-3 form-check">
+            <input type="checkbox" class="form-check-input" id="checkArredo" name="arredo" >
+            <label class="form-check-label" for="checkArredo">Presenta l'arredo</label>
+            </div>
+
+        <div class="mb-3 form-check">
+            <input type="checkbox" class="form-check-input" id="checkVisibile" name="visibile" checked>
+            <label class="form-check-label" for="checkVisibile">Rendere visibile</label>
+            </div>
+
+
+        </div>  
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Chiudi</button>
+          <button type="submit" class="btn btn-primary">Crea Annuncio</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endif %}
+{% endif %}
+{% endblock %}

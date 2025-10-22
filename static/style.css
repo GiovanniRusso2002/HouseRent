@@ -1,0 +1,98 @@
+.devimg {
+    display: inline;
+    height: 140px;
+    vertical-align: middle;
+}
+
+.usrimg {
+    display: inline;
+    height: 50px;
+    vertical-align: middle;
+    margin: 0.5rem 0.5rem 0.5rem 0rem;
+}
+
+.mybutton {
+    background-color: #f6ae2d;
+    border: none;
+    padding-bottom: 12px;
+    border-radius: 50%;
+    bottom: 30px;
+    color: #fefae0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 50px;
+    height: 60px;
+    position: fixed;
+    right: 30px;
+    text-align: center;
+    text-decoration: none;
+    vertical-align: middle;
+    width: 60px;
+}
+
+.mynavbar {
+    background-color: #f6ae2d;
+    height: 6rem;
+}
+
+.username {
+    font-weight: 100;
+}
+
+body{
+    background-color: #fefae0;
+}
+
+.my_color_text {
+    color: #ffffff; 
+}
+.btn-secondary{
+    background-color: #86bbd8;
+}
+
+.btn-primary{
+    background-color: #33658A;
+}
+
+.card{
+    background-color: #fffef5;
+}
+
+.list-group-item{
+    background-color: #fefae0;
+}
+
+
+
+
+#myaside li {
+    padding-bottom: 5px;
+}
+
+#myaside ul {
+    list-style-type: none;
+    padding: 0rem 1rem;
+}
+
+#myheader h1 {
+    color: #fefae0;
+}
+
+
+@media (max-width: 991.98px) {
+
+    #myaside ul {
+        display: flex;
+        justify-content: space-between;
+        list-style-type: none;
+        padding: 0rem 1rem;
+    }
+
+    aside li {
+        display: inline;
+        list-style-type: none;
+        padding: 0em;
+        width: fit-content;
+    }
+}

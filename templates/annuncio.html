@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+{% block title %}Annuncio by {{annuncio.username}}{% endblock %}
+{% block home_active %}active{% endblock %}
+
+{% block content %}
+
+{% if current_user.is_authenticated == 0 %}
+<div class="alert alert-primary  d-flex align-items-center mr-3" role="alert">
+  <strong>Attenzione! </strong> Si consiglia di effettuare il login per effettuare una prenotazione.
+  </button>
+</div>
+
+{%endif%}
+
+<div class="container-fluid mt-4">
+  <div class="row justify-content-end">
+    <main class="col-lg-10 col-md-12">
+      <div class="row border-top p-2 mx-2">
+        <div class="col-lg-3 col-md-6 col-sm-12 px-0">
+
+          <div id="carouselExample" class="carousel slide">
+            <div class="carousel-inner">
+              {%for immagine in foto%}
+              <div class="carousel-item {% if loop.index == 1 %}active{%endif%}">
+                <img src="{{ url_for('static', filename= immagine ) }}" class="d-block w-100" alt="Questa è un immagine dell'annuncio">
+              </div>
+              {% endfor %}
+            
+            </div>
+            <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample" data-bs-slide="prev">
+              <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+              <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#carouselExample" data-bs-slide="next">
+              <span class="carousel-control-next-icon" aria-hidden="true"></span>
+              <span class="visually-hidden">Next</span>
+            </button>
+          </div>
+
+        </div>
+        <div class="col-lg-9 col-md-6 col-sm-12">
+          <section class="d-flex align-items-center mt-2 mb-4">
+            <div><img class="usrimg rounded-circle" src="{{ url_for('static', filename= annuncio.immagine_profilo ) }}"
+                alt="Questa è l'immagine dell'utente {{ annuncio.username |e }}"></div>
+            <div>
+              <h4 class="username">{{ annuncio.username | e }}</h4>
+            </div>
+            <div class="flex-grow-1 text-end">
+              <strong>{{ annuncio.titolo | e }}</strong>
+            </div>
+          </section>
+          <ul class="list-group list-group-flush pb-3">
+            <li class="list-group-item"><strong>Indirizzo: </strong>{{ annuncio.indirizzo |e }} </li>
+            <li class="list-group-item"><strong>Tipo: </strong>{{ annuncio.tipo |e }} </li>
+            <li class="list-group-item"><strong>Descrizione: </strong>{{ annuncio.descrizione |e }} </li>
+            <li class="list-group-item"><strong>Numero locali: </strong>{{ annuncio.locali |e }} </li>
+            <li class="list-group-item"><strong>Prezzo: </strong>€{{ annuncio.prezzo |e }}  </li>
+            <li class="list-group-item"><strong>Email Locatore: </strong>{{ annuncio.mail_utente |e }}  </li>
+            <li class="list-group-item"><strong>Arredata: </strong> {% if annuncio.arredo == 1 %}<i class="fas fa-check text-success"></i> {% else %} <i class="fas fa-times text-danger"></i>{% endif%} </li>
+        </ul>
+        </div>
+      </div>
+
+      {% if current_user.is_authenticated %}
+
+      <div class="mb-3 py-3 bg-light-subtle bg-opacity-10 border border-light-subtle">
+        <form action="/visita/new" method="POST" enctype="multipart/form-data">
+              
+            <div class="mb-3 form-group">
+              <label for="dateTextInput" class="form-label">Seleziona una data</label>
+              <input class="form-control" type="date" name="data" id="dateTextInput"  min="{{ start }}" max="{{ end }}" required>
+            </div>
+          
+  
+            <div class="mb-3 form-group">
+              <label for="selezionaOpzioneTipo">Seleziona una fascia oraria</label>
+              <select class="form-select" id="selezionaOpzioneTipo" name="fascia_oraria" required>
+                  <option>9-12</option>
+                  <option>12-14</option>
+                  <option>14-17</option>
+                  <option>17-20</option>
+                  
+              </select>
+              </div>
+  
+              <div class="mb-3 form-group">
+                <label for="selezionaOpzioneTipo">Seleziona un tipo</label>
+                <select class="form-select" id="selezionaOpzioneTipo" name="tipo" required>
+                    <option>presenza</option>
+                    <option>remoto</option>
+                    
+                </select>
+                </div>
+          <button type="submit" class="btn btn-primary">Richiedi</button>
+          <input type="number" name="ID_annuncio" value="{{ annuncio.ID_annuncio }}" hidden>
+        </form>
+      </div>
+
+      {%endif%}
+    </main>
+   
+    </div>
+  </div>
+
+{% endblock %}

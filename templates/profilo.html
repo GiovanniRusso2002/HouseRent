@@ -1,0 +1,160 @@
+{% extends "base.html" %}
+{% block title %}Dashboard{% endblock %}
+{% block home_active %}active{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid mt-4">
+  <div class="row justify-content-end">
+    <main class="col-lg-12">
+      <div class="row  p-2 mx-2">
+
+        <h3>Dashboard Cliente</h3>
+
+        {% if visite_personali %}
+
+        {% for visita_personale in visite_personali %}
+        
+        <div class="card m-3" style="width: 18rem;">
+          <img src="{{ url_for('static', filename=visita_personale.foto ) }}" class="card-img-top mt-2" alt="Questa è l'immagine dell'annuncio">
+          <div class="card-body">
+            <div class="d-flex flex-row">
+              <img class="usrimg rounded-circle m-2" src="{{ url_for('static', filename=visita_personale.immagine_profilo ) }}"
+              alt="Questa è l'immagine dell'utente ">
+              <h4 class="username p-2">{{visita_personale.username |e}}</h4>
+            </div>
+            <ul>
+              <li class="card-text">Indirizzo: {{  visita_personale.indirizzo |e}}</li>
+              <li class="card-text">Data: {{visita_personale.data |e}}</li> 
+              <li class="card-text">Fascia Oraria: {{visita_personale.fascia_oraria |e}} ({{visita_personale.tipo |e}})</li>
+              <li class="card-text">Mail utente: {{visita_personale.mail_utente |e}}</li>
+              <li class="card-text">Stato: {{ visita_personale.stato |e}} {% if visita_personale.stato == 'richiesta' %}<i class="fas fa-spinner fa-spin text-info"></i>{%endif%}{% if visita_personale.stato == 'accettata' %}<i class="fas fa-check text-success"></i>{%endif%}{% if visita_personale.stato == 'rifiutata' %}<i class="fas fa-times text-danger"></i>{% endif %} </li>
+              {%if visita_personale.motivazione != ''  %}
+              <li class="card-text">Motivazione: {{visita_personale.motivazione |e}} </li>
+              {% endif %}
+            </ul>
+            
+          </div>
+        </div>
+        {% endfor %}
+
+        {%else%}
+        <div class="alert alert-primary d-flex align-items-center" role="alert">
+          <svg class="bi flex-shrink-0 me-2" role="img" aria-label="Info:"><use xlink:href="#info-fill"></use></svg>
+          <div>
+            Non ci sono visite prenotate.
+          </div>
+        </div>
+
+
+        {%endif%}
+
+        {% if current_user.tipo == 'locatore'%}
+
+        
+        <h3>Dashboard Locatore</h3>
+       {% if visite_locatore %}
+        
+        <h4>Visite da gestire</h4>
+
+        {% for visita_locatore in visite_locatore %}
+
+        {% if visita_locatore.stato == 'richiesta'%}
+
+
+        <div class="card m-3" style="width: 18rem;">
+          <img src="{{ url_for('static', filename=visita_locatore.foto ) }}" class="card-img-top mt-2" alt="Questa è l'immagine dell'annuncio">
+          <div class="card-body">
+            <div class="d-flex flex-row">
+              <img class="usrimg rounded-circle m-2" src="{{ url_for('static', filename=visita_locatore.immagine_profilo ) }}"
+              alt="Questa è l'immagine dell'utente ">
+              <h4 class="username p-2">{{visita_locatore.username |e}}</h4>
+            </div>
+            <ul>
+              <li class="card-text">Indirizzo: {{visita_locatore.indirizzo |e}}</li>
+              <li class="card-text">Data: {{visita_locatore.data |e}}</li> 
+              <li class="card-text">Fascia Oraria: {{ visita_locatore.fascia_oraria |e}} ({{ visita_locatore.tipo |e}})</li>
+              <li class="card-text">Mail utente: {{visita_locatore.mail_utente |e}}</li>
+              <li class="card-text">Stato: {{visita_locatore.stato |e}} {% if visita_locatore.stato == 'richiesta' %}<i class="fas fa-spinner fa-spin text-info"></i>{%endif%}{% if visita_locatore.stato == 'accettata' %}<i class="fas fa-check text-success"></i>{%endif%}{% if visita_locatore.stato == 'rifiutata' %}<i class="fas fa-times text-danger"></i>{%endif%}</li>
+            </ul>
+            <form id="myForm" action="/visita/confirm" method="POST" enctype="multipart/form-data">
+              
+            <div class="form-check form-check-inline">
+                      <input class="form-check-input" type="radio" name="stato_finale" id="inlineRadio1" value="accettata" checked>
+                      <label class="form-check-label" for="inlineRadio1">Accetta</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                      <input class="form-check-input" type="radio" name="stato_finale" id="inlineRadio2" value="rifiutata">
+                      <label class="form-check-label" for="inlineRadio2">Rifiuta</label>
+                    </div>
+      
+              <div class="mb-3">
+                <div class="form-floating mb-3">
+                  <input type="text" class="form-control" name="motivazione" id="titleInput" placeholder="Inserisci una motivazione">
+                  <label for="titleInput">Motivazione</label>
+                </div>
+              </div>
+            
+              <div class="d-grid gap-2 d-md-flex justify-content-md-end pb-3">
+                <button type="submit" class="btn btn-primary">Conferma</button> 
+                </div>
+                  
+                  <input type="number" name="ID_visita" value="{{ visita_locatore.ID_visita }}" hidden>
+            </form>
+            
+ 
+          </div>
+        </div>
+
+        {% endif %}
+
+        {% endfor %}
+
+        <h4>Visite gestite </h4>
+
+        {% for visita_locatore in visite_locatore %}
+
+        {% if visita_locatore.stato != 'richiesta'%}
+
+        <div class="card m-3" style="width: 18rem;">
+          <img src="{{ url_for('static', filename=visita_locatore.foto ) }}" class="card-img-top mt-2" alt="Questa è l'immagine dell'annuncio">
+          <div class="card-body">
+            <div class="d-flex flex-row">
+              <img class="usrimg rounded-circle m-2" src="{{ url_for('static', filename=visita_locatore.immagine_profilo ) }}"
+              alt="Questa è l'immagine dell'utente ">
+              <h4 class="username p-2">{{visita_locatore.username |e}}</h4>
+            </div>
+            <ul>
+              <li class="card-text">Indirizzo: {{visita_locatore.indirizzo |e}}</li>
+              <li class="card-text">Data: {{visita_locatore.data |e}}</li> 
+              <li class="card-text">Fascia Oraria: {{visita_locatore.fascia_oraria |e}} ({{ visita_locatore.tipo |e}})</li>
+              <li class="card-text">Mail utente: {{visita_locatore.mail_utente |e}}</li>
+              <li class="card-text">Stato: {{visita_locatore.stato |e}}{% if visita_locatore.stato == 'richiesta' %}<i class="fas fa-spinner fa-spin text-info"></i>{%endif%}{% if visita_locatore.stato == 'accettata' %}<i class="fas fa-check text-success"></i>{%endif%}{% if visita_locatore.stato == 'rifiutata' %}<i class="fas fa-times text-danger"></i>{% endif %}</li>
+              {%if visita_locatore.motivazione != ''  %}
+              <li class="card-text">Motivazione: {{visita_locatore.motivazione |e}} </li>
+              {% endif %}
+            </ul>
+
+          </div>
+
+        </div>
+
+        {% endif %}
+
+        {% endfor %}
+
+        {%else%}
+        <div class="alert alert-primary d-flex align-items-center" role="alert">
+          <svg class="bi flex-shrink-0 me-2" role="img" aria-label="Info:"><use xlink:href="#info-fill"></use></svg>
+          <div>
+            Non ci sono visite da gestire.
+          </div>
+        </div>
+        {%endif%}
+        {% endif %}
+    </main>
+
+    </div>
+  </div>
+
+{% endblock %}

@@ -1,0 +1,187 @@
+{% extends "base.html" %}
+{% block title %}Edit Annuncio{% endblock %}
+{% block home_active %}active{% endblock %}
+
+{% block content %}
+<div class="container-fluid mt-4">
+  <div class="row justify-content-end">
+    <main class="col-lg-10 col-md-12">
+      <div class="row border-top p-2 mx-2">
+        <div class="col-lg-3 col-md-6 col-sm-12 px-0">
+          
+      
+          <div id="carouselExample" class="carousel slide">
+            <div class="carousel-inner">
+              {%for immagine in foto%}
+              <div class="carousel-item active {% if loop.index == 1 %}active{%endif%}">
+                <img src="{{ url_for('static', filename= immagine ) }}" class="d-block w-100" alt="Questa è un immagine dell'annuncio">
+              </div>
+              {% endfor %}
+            
+            </div>
+            <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample" data-bs-slide="prev">
+              <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+              <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#carouselExample" data-bs-slide="next">
+              <span class="carousel-control-next-icon" aria-hidden="true"></span>
+              <span class="visually-hidden">Next</span>
+            </button>
+          </div>
+
+        </div>
+        <div class="col-lg-9 col-md-6 col-sm-12">
+          <section class="d-flex align-items-center mt-2 mb-4">
+            <div><img class="usrimg rounded-circle" src="{{ url_for('static', filename= annuncio.immagine_profilo ) }}"
+                alt="Questa è l'immagine dell'utente {{ annuncio.username |e }}"></div>
+            <div>
+              <h4 class="username">{{ annuncio.username | e }}</h4>
+            </div>
+            <div class="flex-grow-1 text-end">
+              <strong>{{ annuncio.titolo | e }}</strong>
+            </div>
+          </section>
+          <ul class="list-group list-group-flush pb-3">
+            <li class="list-group-item"><strong>Indirizzo: </strong>{{ annuncio.indirizzo |e }} </li>
+            <li class="list-group-item"><strong>Tipo: </strong>{{ annuncio.tipo |e }} </li>
+            <li class="list-group-item"><strong>Descrizione: </strong>{{ annuncio.descrizione |e }} </li>
+            <li class="list-group-item"><strong>Numero locali: </strong>{{ annuncio.locali |e }} </li>
+            <li class="list-group-item"><strong>Prezzo: </strong>€{{ annuncio.prezzo |e }} </li>
+            <li class="list-group-item"><strong>Arredata: </strong> {% if annuncio.arredo == 1 %}<i class="fas fa-check text-success"></i> {% else %} <i class="fas fa-times text-danger"></i>{% endif%} </li>
+
+        </ul>
+
+        <div class="flex-grow-1 text-end">
+          <button class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#createModal" >Modifica</button>
+        </div>
+
+        </div>
+  
+      </div>
+
+      
+      
+    </main>
+
+  
+    </div>
+  </div>
+
+
+<div class="modal fade" id="createModal" tabindex="-1">
+<div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+    <div class="modal-header">
+        <h1 class="modal-title fs-5">Modifica annuncio</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    </div>
+    <form action="/annuncio/update" method="POST" enctype="multipart/form-data">
+        <div class="modal-body">
+
+
+        <div class="mb-3">
+            <label for="titoloInput" class="form-label">Modifica il titolo</label>
+            <input type="text" class="form-control" id="titoloInput" name="titolo" value="{{annuncio.titolo}}" required>
+            </div>
+
+            <div class="mb-3">
+            <label for="indirizzoInput" class="form-label">Indirizzo</label>
+            <input type="text" class="form-control" id="indirizzoInput" name="indirizzo" value="{{annuncio.indirizzo}}" disabled>
+            </div>
+        
+        <div class="mb-3 form-group">
+            <label for="selezionaOpzioneTipo">Modifica il tipo</label>
+            <select class="form-select" id="selezionaOpzioneTipo" name="tipo" >
+                <option {% if annuncio.tipo == 'casa indipendente' %} selected{%endif%}>casa indipendente</option>
+                <option {% if annuncio.tipo == 'appartamento' %}selected{%endif%}>appartamento</option>
+                <option {% if annuncio.tipo == 'loft' %}selected {%endif%}>loft</option>
+                <option {% if annuncio.tipo == 'villa' %}selected {%endif%}>villa</option>
+            </select>
+            </div>
+
+
+        <div class="mb-3 form-group">
+            <label for="selezionaOpzioneLocali">Modifica il numero di locali</label>
+            <select class="form-select" id="selezionaOpzioneLocali" name="locali" >
+                <option {% if annuncio.locali == 1 %} selected{%endif%} >1</option>
+                <option {% if annuncio.locali == 2 %} selected{%endif%}>2</option>
+                <option {% if annuncio.locali == 3 %} selected{%endif%}>3</option>
+                <option {% if annuncio.locali == 4 %} selected{%endif%}>4</option>
+                <option {% if annuncio.locali == 5 %} selected{%endif%}>5+</option>
+            </select>
+            </div>
+
+    
+
+        <div class="mb-3">
+            <label for="annuncioTextArea" class="form-label">Modifica la descrizione</label>
+            <textarea class="form-control" id="annuncioTextArea"  name="descrizione" rows="3"
+            placeholder="Inserisci una descrizione per il tuo annuncio" required minlength="30" required>{{annuncio.descrizione}}</textarea>
+        </div>
+
+
+        <div class="mb-3 form-group">
+            <label for="prezzo">Prezzo:</label>
+            <div class="input-group">
+                <div class="input-group-prepend">
+                    <span class="input-group-text">€</span>
+                </div>
+                <input type="number" class="form-control" id="prezzo" name="prezzo" value="{{annuncio.prezzo}}" placeholder="Inserisci il prezzo" required>
+            </div>
+        </div>
+
+        {% for i in range(5) %}
+        <div class="mb-3 row align-items-center">
+          <div class="col-4">
+          {% if i < foto|length %}
+            <img class="img-fluid w-100 p-2" src="{{ url_for('static', filename=foto[i]) }}"
+                alt="Questa è un'immagine dell'annuncio">
+          {% endif %}
+          </div>
+          <div class="input-group col">
+            <div class="row justify-content-center">
+              <div class="col">
+                <label for="image_input{{i}}">Inserisci una nuova foto</label>
+                <input class="form-control" type="file" id="image_input{{i}}" name="immagini_nuove{{i}}">
+                {% if i < foto|length %}
+                <input type="hidden" name="immagini_vecchie{{i}}" value="{{foto[i]}}">
+                {% endif %}
+              </div>
+            </div>
+            {% if i < foto|length %}
+            <div class="form-check row justify-content-center">
+              <div class="col mt-3 align-center">
+              <input class="form-check-input" type="checkbox" name="immagini_selezionate{{i}}" id="immagini_selezionate{{i}}" value="{{foto[i]}}">
+              <label class="form-check-label" for="immagini_selezionate{{i}}">Cancella foto</label>
+              </div>
+            </div>
+            {% endif %}
+          </div>
+        </div>
+        {% endfor %} 
+
+        <div class="mb-3 form-check">
+            <input type="checkbox" class="form-check-input" id="checkArredo" name="arredo" {% if annuncio.arredo == 1 %} checked {%endif%} >
+            <label class="form-check-label" for="checkArredo">Presenta l'arredo</label>
+            </div>
+
+        <div class="mb-3 form-check">
+            <input type="checkbox" class="form-check-input" id="checkVisibile" name="visibile" {% if annuncio.visibile == 1 %} checked {%endif%}>
+            <label class="form-check-label" for="checkVisibile">Rendere visibile</label>
+            </div>
+
+
+            <input type="number" name="ID_annuncio" value="{{ annuncio.ID_annuncio }}" hidden>
+
+
+        </div>  
+        <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Chiudi</button>
+        <button type="submit" class="btn btn-primary">Modifica Annuncio</button>
+        </div>
+    </form>
+    </div>
+</div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,104 @@
+{% extends "base.html" %}
+{% block title %}I Miei Annunci{% endblock %}
+{% block home_active %}active{% endblock %}
+
+{% block content %}
+
+
+<aside id="myaside" class="col-lg-3 col-md-12"> 
+ </aside>
+<main class="col-lg-9 col-md-12">
+  {%if annunci%}
+  {% for annuncio in annunci %}
+  {%if annuncio.visibile%}
+  <article class="row border p-2 mx-2 my-4">
+    <div class="col-lg-3 col-md-6 col-sm-12 px-0">
+      {% if annuncio.foto%}
+      <img class="w-100 p-2"
+        src="{{ url_for('static', filename=annuncio.foto) }}" alt="Questa è l'immagine del post">
+      {% endif%}
+      
+      
+    </div>
+    <div class="col-lg-9 col-md-6 col-sm-12">
+      <section class="d-flex align-items-center mt-2 mb-4">
+        <div><img class="usrimg rounded-circle" src="{{ url_for('static', filename=annuncio.immagine_profilo ) }}"
+            alt="Questa è l'immagine dell'utente {{ annuncio.username |e }}"></div>
+        <div>
+          <h4 class="username">{{ annuncio.username |e }}</h4>
+        </div>
+        <div class="flex-grow-1 text-end">
+          
+        </div>
+      </section>
+      <ul class="list-group list-group-flush pb-3">
+        <li class="list-group-item"><strong>Titolo: </strong>{{ annuncio.titolo |e }} </li>
+        <li class="list-group-item"><strong>Indirizzo: </strong>{{ annuncio.indirizzo |e }} </li>
+        <li class="list-group-item"><strong>Numero locali: </strong>{{ annuncio.locali |e }} </li>
+        <li class="list-group-item"><strong>Prezzo: </strong>€{{ annuncio.prezzo |e }} </li>
+        <li class="list-group-item"><strong>Visibile: </strong>{% if annuncio.visibile == 1 %}<i class="fas fa-check text-success"></i> {% else %} <i class="fas fa-times text-danger"></i>{% endif%}</li>
+      
+
+    </ul>
+        
+    <div class="d-grid gap-2 d-md-flex justify-content-md-end pb-3">
+      <a href="{{url_for('edit_annuncio', ID_annuncio=annuncio.ID_annuncio)}}"><button class="btn btn-primary">Visualizza</button></a> 
+    </div>
+      
+    </div>
+  </article>
+  {%endif%}
+  {% endfor %}
+
+  {% for annuncio in annunci %}
+  {% if annuncio.visibile == 0 %}
+  
+ 
+  <article class="row border p-2 mx-2 my-4">
+    <div class="col-lg-3 col-md-6 col-sm-12 px-0">
+      {% if annuncio.foto%}
+      <img class="w-100 p-2"
+        src="{{ url_for('static', filename=annuncio.foto) }}" alt="Questa è l'immagine del post">
+      {% endif%}
+      
+      
+    </div>
+    <div class="col-lg-9 col-md-6 col-sm-12">
+      <section class="d-flex align-items-center mt-2 mb-4">
+        <div><img class="usrimg rounded-circle" src="{{ url_for('static', filename=annuncio.immagine_profilo ) }}"
+            alt="Questa è l'immagine dell'utente {{ annuncio.username |e }}"></div>
+        <div>
+          <h4 class="username">{{ annuncio.username |e }}</h4>
+        </div>
+        <div class="flex-grow-1 text-end">
+          
+        </div>
+      </section>
+      <ul class="list-group list-group-flush pb-3">
+        <li class="list-group-item"><strong>Titolo: </strong>{{ annuncio.titolo |e }} </li>
+        <li class="list-group-item"><strong>Indirizzo: </strong>{{ annuncio.indirizzo |e }} </li>
+        <li class="list-group-item"><strong>Numero locali: </strong>{{ annuncio.locali |e }} </li>
+        <li class="list-group-item"><strong>Prezzo: </strong>€{{ annuncio.prezzo |e }} </li>
+        <li class="list-group-item"><strong>Visibile: </strong>{% if annuncio.visibile == 1 %}<i class="fas fa-check text-success"></i> {% else %} <i class="fas fa-times text-danger"></i>{% endif%}</li>
+      
+
+    </ul>
+
+    <div class="d-grid gap-2 d-md-flex justify-content-md-end pb-3">
+        <a href="{{url_for('edit_annuncio', ID_annuncio=annuncio.ID_annuncio)}}"><button class="btn btn-primary">Visualizza</button></a> 
+      </div>
+    </div>
+  </article>
+  {%endif%}
+  {% endfor %}
+  {%else%}
+  <div class="alert alert-primary d-flex align-items-center" role="alert">
+    <svg class="bi flex-shrink-0 me-2" role="img" aria-label="Info:"><use xlink:href="#info-fill"></use></svg>
+    <div>
+      Non hai ancora caricato annunci.
+    </div>
+  </div>
+  {%endif%}
+
+</main> 
+{% endblock %}
